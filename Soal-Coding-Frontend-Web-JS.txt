@@ -1,0 +1,52 @@
+Soal Coding: Migrasi Login dari JSP ke JavaScript
+
+Berikut codingan awal yang diberikan :
+
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%
+    String errorMessage = request.getParameter("error");
+%>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login Page</title>
+</head>
+<body>
+    <h2>Login</h2>
+    <form action="login.jsp" method="post">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username">
+        <br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password">
+        <br>
+        <button type="submit">Login</button>
+    </form>
+?
+    <% if (errorMessage != null) { %>
+        <p style="color: red;"><%= errorMessage %></p>
+    <% } %>
+</body>
+</html>
+
+Permasalahan dengan kode di atas:
+1. XSS Vulnerability:
+o Jika pengguna memasukkan <script>alert('Hacked!')</script> pada parameter error, maka JavaScript tersebut akan dieksekusi.
+2. Tidak ada validasi di sisi klien:
+o Form ini langsung mengirimkan data ke server tanpa mengecek input kosong atau validasi format.
+3. Menggunakan JSP untuk mengelola UI:
+o Harus dipindahkan ke JavaScript agar tidak bergantung pada server-side rendering.
+
+
+Tugas Kandidat
+1. Pindahkan validasi input ke JavaScript:
+o Cegah form dikirim jika username atau password kosong.
+2. Ganti error message agar aman dari XSS:
+o Gunakan .textContent alih-alih .innerHTML.
+3. Gunakan Fetch API untuk login request ke /api/login (simulasi backend).
+
+AspekKode JSP LamaKode JS BaruError Handling<%= errorMessage %> (raw output, rentan XSS)textContent = result.message (aman dari XSS)Form SubmissionSubmit langsung ke login.jspMencegah reload halaman dengan event.preventDefault()Validasi InputTidak ada validasi di sisi klienCek username dan password sebelum dikirim ke serverAJAX RequestTidak adaMenggunakan fetch() untuk komunikasi dengan backendSecurityXSS bisa terjadi jika error ditampilkan langsungMenggunakan textContent untuk keamanan
+
+Langkah-langkah pengisian jawaban :
+1. Ubah login.jsp menjadi login.html
+2. Buat login.js untuk Validasi dan Request ke Backend
